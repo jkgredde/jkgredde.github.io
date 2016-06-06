@@ -1,0 +1,517 @@
+<!doctype html>
+<html>
+<head>
+    <title>Line Chart</title>
+    <script src="C:\Users\Jkgredde\Desktop\JavaScriptModel\Chart.js-master\dist\Chart.bundle.js"></script>
+    <script src="http://cdnjs.cloudflare.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
+    <style>
+    canvas{
+        -moz-user-select: none;
+        -webkit-user-select: none;
+        -ms-user-select: none;
+    }
+    </style>
+</head>
+
+<body>
+    <div style="width:75%;">
+        <canvas id="canvas"></canvas>
+    </div>
+    <br>
+    <br>
+    <button id="YieldData">Yield Data</button>
+    <button id="TiterData">Titer Data</button>
+    <button id="GasData">Gas Data</button>
+    <button id="addData">Add Data</button>
+    <button id="removeData">Remove Data</button>
+    <button id="removeDataset">Remove Dataset</button>
+    <br>
+    <br> 
+    
+    <script>
+  //Fermentation Model
+        var ProcessTime_hr = 40;
+        var targetOUR = 1600;
+        var Innoculum_gram = 0.1;
+        var InitalVolume_L = 8;
+        var GrowthTemp = 37;
+        var ProductionTemp = 30
+        var TempDropTime_hr = 2;
+        var TransitionBiomass_gL = 10;
+        var xOUR = 1.5;
+        var xOURmax = 12;
+        var maxGrowthRate = 0.65;
+
+        //Initial Variables
+        var Process_Data = {
+            Time_hr:[0],
+            Volume_L:[InitalVolume_L],
+            Temp_C:[37],
+            GrowthRate:[0.650], 
+            Temp_C:[GrowthTemp],
+            OTR:[targetOUR],
+            OUR:[0],
+            vOUR:[0],
+            xOUR:[0],
+            GrowthFactor:[5,xOUR],
+            Arrhenius:[1.5e15, 91229, 8.3145],
+            TempDrop:[GrowthTemp,ProductionTemp,TempDropTime_hr,TransitionBiomass_gL] //(startTemp,EndTemp,dropTime,transBio) 
+        };
+
+        var maxProdYield = 0.44;
+        var maxBioYield = 0.55;
+        var maxSpecProd = 0.1;
+        var BioDensity = 1;
+        var ProdDensity = 0.9;
+        var Glucose_Conc = 0.5; //Percent g/g
+
+        var YieldData = {
+            Biomass_gL:[0],
+            Biomass_gram:[Innoculum_gram],
+            Product_gL:[0],
+            Product_gram: [0],
+            incProdYield:[0],
+            ProdYield:[0],
+            incBioYield:[0],
+            BioYield:[0],
+            xProd:[0],
+        };
+       
+        //The Fermentation Loop
+        var time = 0;
+        var time_inc = .5;
+
+        var y = YieldData;
+        var p = Process_Data;
+ 
+        var GrowthFactor = 1;
+        for (var i = 0;i <= ProcessTime_hr/time_inc; i+=1){
+
+            //Temperature Calculation
+            var avg = function(array){
+                var total = 0;
+                for (var x = 0; x < array.length;x+=1){
+                    total = array[x]+total;         
+                };
+                return total/array.length;
+            };
+
+            var fTemp_C = function(startTemp,EndTemp,dropTime,transBio){ 
+                var Bio = y.Biomass_gL[0]
+                if (i===0){Bio = y.Biomass_gL[0]}
+                else {Bio = y.Biomass_gL[i-1]};
+                if (Bio <= transBio) {
+                    Temp_C = startTemp;
+                }
+                else if (p.Temp_C[i-1] <= EndTemp) {
+                    Temp_C = EndTemp;
+                }
+                else {
+                    Temp_C = p.Temp_C[i-1] - time_inc*(startTemp-EndTemp)/dropTime;
+                };  
+            return Temp_C;  
+            };
+            
+            var fGrowthRate = function(PreExpFactor, ActEnergy, GasConstant, Temp_C){
+                GrowthRate = PreExpFactor*Math.exp(-ActEnergy/(GasConstant*(Temp_C+273.15)));
+                GrowthRate = GrowthFactor*GrowthRate;
+                return GrowthRate;
+            };
+
+            var fBiomass_gram = function(initBio_gram, GrowthRate, time_hr){
+                if (i===0){Biomass_gram = initBio_gram}
+                else {
+                    Biomass_gram = y.Biomass_gram[i-1]*Math.exp(GrowthRate*time_inc);}; 
+                return Biomass_gram
+            };
+            
+            var fProduct_gram = function(initProd_gram, xProd, time_inc){
+                if (i===0){Product_gram = initProd_gram}
+                else {
+                    Product_gram = y.Product_gram[i-1] + xProd*time_inc*Biomass_gram;
+                }; 
+                return Product_gram
+            };
+
+             var Volume_Total_L = function(Biomass_gram,Product_gram){
+ 
+                var BioH2O = Biomass_gram/avg(y.incBioYield)/1000;
+                var ProdH2O = Product_gram/avg(y.incProdYield)/1000; 
+                 
+                if (i===0){
+                    Volume_L = p.Volume_L[0];
+                }
+                else {
+                    
+                    //Volume_L = 10 + time*.1
+                    
+                    Volume_L = (ProdH2O + BioH2O)*(1 - Glucose_Conc)/Glucose_Conc + p.Volume_L[0];
+                };
+                return Volume_L;
+            }; 
+                
+            //Call Functions
+
+            Temp_C = fTemp_C(p.TempDrop[0],p.TempDrop[1],p.TempDrop[2],p.TempDrop[3]); 
+            GrowthRate = fGrowthRate(p.Arrhenius[0],p.Arrhenius[1],p.Arrhenius[2],Temp_C);
+            Biomass_gram = fBiomass_gram(y.Biomass_gram[0],GrowthRate,time_inc);
+
+            var xProd = (1-GrowthRate/maxGrowthRate)*maxSpecProd; 
+
+            Product_gram = fProduct_gram(y.Product_gram[0],xProd,time_inc);
+         
+            var incBioYield = GrowthRate/maxGrowthRate*maxBioYield;
+            var incProdYield = (1-GrowthRate/maxGrowthRate)*maxProdYield; 
+            
+            Volume_L = Volume_Total_L(Biomass_gram,Product_gram);
+
+            var Product_gL = Product_gram/Volume_L;
+            var Biomass_gL = Biomass_gram/Volume_L;
+
+            //console.log(Volume_L); 
+
+            p.Time_hr[i] = time;
+            p.Volume_L[i] = Volume_L;
+            p.Temp_C[i] = Temp_C;
+            p.GrowthRate[i] = GrowthRate;
+            y.Biomass_gL[i] = Biomass_gL;
+            y.Biomass_gram[i] = Biomass_gram;
+            y.Product_gL[i] = Product_gL;
+            y.Product_gram[i] = Product_gram;
+            y.incProdYield[i] = incProdYield;
+            y.ProdYield[i] = avg(y.incProdYield);
+            y.incBioYield[i] = incBioYield;
+            y.BioYield[i] = avg(y.incBioYield);
+            y.xProd[i] = xProd;
+
+            var vOURmax = xOURmax*Biomass_gL;
+            var vOTR = targetOUR/Volume_L;
+            var vOURratio = vOTR/vOURmax;
+                  
+            if (vOURratio>=1){
+                xOUR = xOURmax;
+                vOURratio = 1 
+            }
+            else {xOUR = vOTR/Biomass_gL};
+
+            GrowthFactor = xOUR*1/(p.GrowthFactor[0]-p.GrowthFactor[1])+1-1/(p.GrowthFactor[0]-p.GrowthFactor[1])*p.GrowthFactor[0];
+            if (GrowthFactor>1) {GrowthFactor=1}
+            else if (GrowthFactor<=0){GrowthFactor=0}; 
+
+            var vOUR = Biomass_gL*xOUR; 
+            var OUR = vOUR*Volume_L;
+
+            p.xOUR[i] = xOUR;
+            p.vOUR[i] = vOUR;
+            p.OUR[i] = OUR;
+            
+            //console.log(GrowthFactor);
+            time = time + time_inc;
+        };
+
+    //____________________________________________________________________________
+
+
+        var MONTHS = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
+        
+        var randomScalingFactor = function() {
+            return Math.round(Math.random() * 100);
+            //return 0;
+        };
+        var randomColorFactor = function() {
+            return Math.round(Math.random() * 255);
+        };
+        var randomColor = function(opacity) {
+            return 'rgba(' + randomColorFactor() + ',' + randomColorFactor() + ',' + randomColorFactor() + ',' + (opacity || '.3') + ')';
+        };
+        var xAxis = p.Time_hr;
+        
+        var config = {
+            type: 'line',
+            data: {
+                labels: xAxis,
+                datasets: [{
+                    label: "Volume_L",
+                    data: p.Volume_L,
+                    fill: false,
+                    borderDash: [5, 5],
+                    yAxisID: "y-axis-1",
+                }, {
+                    hidden: false,
+                    label: 'Biomass_gL',
+                    data: y.Biomass_gL,
+                    yAxisID: "y-axis-1",
+                }, {
+                    hidden: false,
+                    label: 'Product_gL',
+                    data: y.Product_gL,
+                    yAxisID: "y-axis-1",
+                }, {
+                    label: "vOUR (mM/hr)",
+                    data: p.vOUR,
+                    yAxisID: "y-axis-1",
+                }]
+            },
+            options: {
+                responsive: true,
+                title:{
+                    display:true,
+                    text:'Fermentation Chart'
+                },
+                tooltips: {
+                    mode: 'label',
+                    callbacks: {
+                        // beforeTitle: function() {
+                        //     return '...beforeTitle';
+                        // },
+                        // afterTitle: function() {
+                        //     return '...afterTitle';
+                        // },
+                        // beforeBody: function() {
+                        //     return '...beforeBody';
+                        // },
+                        // afterBody: function() {
+                        //     return '...afterBody';
+                        // },
+                        // beforeFooter: function() {
+                        //     return '...beforeFooter';
+                        // },
+                        // footer: function() {
+                        //     return 'Footer';
+                        // },
+                        // afterFooter: function() {
+                        //     return '...afterFooter';
+                        // },
+                    }
+                },
+                hover: {
+                    mode: 'dataset'
+                },
+                scales: {
+                    xAxes: [{
+                        display: true,
+                        scaleLabel: {
+                            show: true,
+                            labelString: 'Time(hrs)'
+                        }
+                    }],
+                    yAxes: [{
+                        type: "linear", // only linear but allow scale type registration. This allows extensions to exist solely for log scale for instance
+                        display: true,
+                        scaleLabel: {
+                            display: true,
+                            labelString: 'Titer (g/L)'
+                        },
+                        position: "left",
+                        id: "y-axis-1",
+                    }, {
+                        type: "linear", // only linear but allow scale type registration. This allows extensions to exist solely for log scale for instance
+                        display: false,
+                        scaleLabel: {
+                            display: true,
+                            labelString: 'Specific OUR (mmole/g/hr)'
+                        },
+                        position: "right",
+                        id: "y-axis-2",
+
+                        // grid line settings
+                        gridLines: {
+                            drawOnChartArea: false, // only want the grid lines for one axis to show up
+                        },
+                    }],
+                }
+            }
+        };
+           $.each(config.data.datasets, function(i, dataset) {
+            dataset.borderColor = randomColor(0.4);
+            dataset.backgroundColor = randomColor(0.5);
+            dataset.pointBorderColor = randomColor(0.7);
+            dataset.pointBackgroundColor = randomColor(0.5);
+            dataset.pointBorderWidth = 1;
+        });          
+        window.onload = function() {
+            var ctx = document.getElementById("canvas").getContext("2d");
+            window.myLine = new Chart(ctx, config);
+        };
+
+        $('#YieldData').click(function() {
+            config.options.scales.yAxes[1].display = false;
+            config.options.title.text = "Yield Data";
+            config.data = {
+                labels: xAxis,
+                datasets: [{
+                    label: "Product Yield",
+                    data: y.ProdYield,
+                    fill: false,
+                    yAxisID: "y-axis-1",
+                }, 
+                {
+                    label: "Biomass Yield",
+                    data: y.BioYield,
+                    fill: false,
+                    yAxisID: "y-axis-1",
+                }, {
+                    label: "Inc Prod Yield",
+                    data: y.incProdYield,
+                    fill: false,
+                    yAxisID: "y-axis-1",
+                }, {
+                    label: "Inc Bio Yield",
+                    fill: false,
+                    data: y.incBioYield,
+                    yAxisID: "y-axis-1",
+                }]
+            };
+
+            $.each(config.data.datasets, function(i, dataset) {
+                dataset.borderColor = randomColor(0.4);
+                dataset.backgroundColor = randomColor(0.5);
+                dataset.pointBorderColor = randomColor(0.7);
+                dataset.pointBackgroundColor = randomColor(0.5);
+                dataset.pointBorderWidth = 1;
+            });
+
+            // Update the chart
+            window.myLine.update();
+        });
+
+        $('#TiterData').click(function() {    
+            config.options.scales.yAxes[1].display = false;
+            config.data = {
+                labels: xAxis,
+                datasets: [{
+                    label: "Biomass Titer",
+                    data: y.Biomass_gL,
+                    fill: false,
+                    yAxisID: "y-axis-1",
+                }, 
+                {
+                    label: "Product Titer",
+                    data: y.Product_gL,
+                    fill: false,
+                    yAxisID: "y-axis-1",
+                }]
+            };
+
+            $.each(config.data.datasets, function(i, dataset) {
+                dataset.borderColor = randomColor(0.4);
+                dataset.backgroundColor = randomColor(0.5);
+                dataset.pointBorderColor = randomColor(0.7);
+                dataset.pointBackgroundColor = randomColor(0.5);
+                dataset.pointBorderWidth = 1;
+            });
+
+            // Update the chart
+            window.myLine.update();
+        });
+        $('#GasData').click(function() {
+            config.options.scales.yAxes[1].display = true;
+            config.data = {
+                labels: xAxis,
+                datasets: [{
+                    label: "vOUR (mM/hr)",
+                    data: p.vOUR,
+                    fill: false,
+                    yAxisID: "y-axis-1",
+                }, 
+                {
+                    label: "Specific OUR (g/g/hr)",
+                    data: p.xOUR,
+                    fill: false,
+                    yAxisID: "y-axis-2",
+                }]
+            };
+
+            $.each(config.data.datasets, function(i, dataset) {
+                dataset.borderColor = randomColor(0.4);
+                dataset.backgroundColor = randomColor(0.5);
+                dataset.pointBorderColor = randomColor(0.7);
+                dataset.pointBackgroundColor = randomColor(0.5);
+                dataset.pointBorderWidth = 1;
+            });
+
+            // Update the chart
+            window.myLine.update();
+        });
+        $('#addDataset').click(function() {
+            var newDataset = {
+                label: 'Dataset ' + config.data.datasets.length,
+                borderColor: randomColor(0.4),
+                backgroundColor: randomColor(0.5),
+                pointBorderColor: randomColor(0.7),
+                pointBackgroundColor: randomColor(0.5),
+                pointBorderWidth: 1,
+                data: [],
+            };
+
+            for (var index = 0; index < config.data.labels.length; ++index) {
+                newDataset.data.push(randomScalingFactor());
+            }
+
+            config.data.datasets.push(newDataset);
+            window.myLine.update();
+        });
+
+        $('#addData').click(function() {
+            if (config.data.datasets.length > 0) {
+                var month = MONTHS[config.data.labels.length % MONTHS.length];
+                config.data.labels.push(month);
+
+                $.each(config.data.datasets, function(i, dataset) {
+                    dataset.data.push(randomScalingFactor());
+                });
+
+                window.myLine.update();
+            }
+        });
+
+        $('#removeDataset').click(function() {
+            config.data.datasets.splice(0, 1);
+            window.myLine.update();
+        });
+
+        $('#removeData').click(function() {
+            config.data.labels.splice(-1, 1); // remove the label first
+
+            config.data.datasets.forEach(function(dataset, datasetIndex) {
+                dataset.data.pop();
+            });
+
+            window.myLine.update();
+        });
+        $( document ).ready(function() {
+        $("#1").text("Process Time (hr) ="+ ProcessTime_hr);
+        $("#2").text("target OUR (mmole/hr) ="+ targetOUR);
+        $("#3").text("Innoculum (g) ="+ Innoculum_gram);
+        $("#4").text("Growth Temp (c) ="+ GrowthTemp);
+        $("#5").text("Production Temp (C) ="+ ProductionTemp);
+        $("#6").text("Transition Biomass (g/L) ="+ TransitionBiomass_gL);
+        $("#7").text("TempDropTime (hr) ="+ TempDropTime_hr);
+        $("#8").text("Max GrowthRate ="+ maxGrowthRate);
+        $("#9").text("max Product Yield (g/g) ="+ maxProdYield);
+        $("#10").text("max Biomass Yield (g/g) ="+ maxBioYield);
+        $("#11").text("max Specific Prod (g/g/hr) ="+ maxSpecProd);
+        $("#12").text("Carbon Concentration ="+Glucose_Conc);
+        });
+    </script>
+<br>
+<br>    
+
+<h1>Input List</h1>    
+<ul>
+    <li id = "1" ></li>
+    <li id = "2" ></li>
+    <li id = "3" ></li>
+    <li id = "4" ></li>
+    <li id = "5" ></li>
+    <li id = "6" ></li>
+    <li id = "7" ></li>
+    <li id = "8" ></li>
+    <li id = "9" ></li>
+    <li id = "10" ></li>
+    <li id = "11" ></li>
+    <li id = "12" ></li>
+</ul>  
+</body>
+
+</html>
