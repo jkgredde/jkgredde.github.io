@@ -33,19 +33,19 @@
         var Innoculum_gram = 0.1;
         var InitalVolume_L = 8;
         var GrowthTemp = 37;
-        var ProductionTemp = 30
+        var ProductionTemp = 32
         var TempDropTime_hr = 2;
         var TransitionBiomass_gL = 10;
         var xOUR = 1.5;
         var xOURmax = 12;
-        var maxGrowthRate = 0.65;
+        var maxGrowthRate = 0.70;
 
         //Initial Variables
         var Process_Data = {
             Time_hr:[0],
             Volume_L:[InitalVolume_L],
             Temp_C:[37],
-            GrowthRate:[0.650], 
+            GrowthRate:[0.70], 
             Temp_C:[GrowthTemp],
             OTR:[targetOUR],
             OUR:[0],
@@ -56,7 +56,7 @@
             TempDrop:[GrowthTemp,ProductionTemp,TempDropTime_hr,TransitionBiomass_gL] //(startTemp,EndTemp,dropTime,transBio) 
         };
 
-        var maxProdYield = 0.44;
+        var maxProdYield = 0.2;
         var maxBioYield = 0.55;
         var maxSpecProd = 0.1;
         var BioDensity = 1;
