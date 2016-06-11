@@ -148,8 +148,9 @@ function Execute(){
             xOUR:[xOURmax],
             GrowthFactor:[1],
             Arrhenius:[1.5e15, 91229, 8.3145],
-            xCUR:[],
-            transTime:0,
+            xCUR:[],         
+            GrowthFactor:[1],
+            TransTime:0,
 
             
         };
@@ -168,23 +169,23 @@ function Execute(){
                 return total/array.length
             };
 
-            var fTemp_C = function(startTemp,EndTemp,dropTime,transBio,transTime){ 
+            var fTemp_C = function(startTemp,EndTemp,dropTime,transBio,TransTime,Biomass_gL){ 
                 var Biomass_gL;
                 var TempC;
-                var transTime;
+                var TransTime;
                 if (i===0){Biomass_gL = y.Biomass_gL[0];}
                 else {Biomass_gL = y.Biomass_gL[i-1];}
                 
                 
                 if (Biomass_gL > transBio) {
                     TempC = p.TempC[i-1] - time_inc*(startTemp - EndTemp)/dropTime;
-                }
-                else if (transTime > 0 && Biomass_gL < transBio){
+                } 
+                else if (TransTime > 0 && Biomass_gL < transBio){
                     TempC = EndTemp;
                 }
-                else if (Biomass_gL <= transBio) {
+                else if (Biomass_gL < transBio) {
                     TempC = startTemp;
-                }
+                }  
 
                 if (startTemp > EndTemp && TempC < EndTemp) {
                     TempC = EndTemp;
@@ -192,7 +193,7 @@ function Execute(){
                 else if (startTemp < EndTemp && TempC > EndTemp) {
                     TempC = EndTemp;
                 }
-                      
+                    
                 return TempC;  
             };
             var fGrowthRate = function(PreExpFactor, ActEnergy, GasConstant, Thing,tempInhibition) {
@@ -205,12 +206,12 @@ function Execute(){
                 return GrowthRate;
             };
 
-            var fBiomass_gram = function(initBio_gram, GrowthRate, time_inc){
+            var fBiomass_gram = function(initBio_gram, fGrowthRate, time_inc){
                 var Total_Biomass_gram;
                 //var GrowthRate = GrowthRate;
                 if (i===0){Total_Biomass_grams = initBio_gram;}
                 else {
-                    Total_Biomass_grams = y.Biomass_gram[i-1]*Math.exp(GrowthRate*time_inc);}
+                    Total_Biomass_grams = y.Biomass_gram[i-1]*Math.exp(fGrowthRate*time_inc);}
                 return Total_Biomass_grams;
             };
             
@@ -242,7 +243,7 @@ function Execute(){
 
             //Call Functions
 
-            var TempC = fTemp_C(Number(GrowthTemp)-.2,Number(ProductionTemp),Number(TempDropTime_hr),Number(TransitionBiomass_gL),p.transBio);
+            var TempC = fTemp_C(Number(GrowthTemp)-.2,Number(ProductionTemp),Number(TempDropTime_hr),Number(TransitionBiomass_gL),p.TransTime);
             
             
             //TempInhibition
@@ -251,6 +252,8 @@ function Execute(){
             var GasCon = 8.3145;
 
             var tempInhibition = PreExp*Math.exp(-ActEne/(GasCon*(TempC + 273.15)));
+
+
             //var GrowthRate = fGrowthRate(p.Arrhenius[0], p.Arrhenius[1], p.Arrhenius[2], TempC,tempInhibition);
             //var maxGrowthRate = 0.006+p.Arrhenius[0]*Math.exp(-p.Arrhenius[1]/(p.Arrhenius[2]*(37 + 273.15)));
             
@@ -297,22 +300,22 @@ function Execute(){
 
             var vOUR = Biomass_gL*xOUR; 
             var OUR = vOUR*Volume_L;
-		
-	    if(Biomass_gL>TransitionBiomass_gL){
-                p.transTime = time;
-            };	
-		
+
+            if(Biomass_gL>TransitionBiomass_gL){
+                p.TransTime = time;
+            };
+
             p.xOUR[i] = xOUR; //Nan
             p.xCUR[i] = UptakeRate;
             p.vOUR[i] = vOUR;
             p.OUR[i] = OUR;
-            p.Time_hr[i] = parseFloat(time).toFixed(1);        
-            p.Volume_L[i] = parseFloat(Volume_L).toFixed(1);   
-            p.TempC[i] = parseFloat(TempC).toFixed(1);      
-            p.GrowthRate[i] = parseFloat(GrowthRate2).toFixed(3);   
-            y.Biomass_gL[i] = parseFloat(Biomass_gL).toFixed(1); 
-            y.Biomass_gram[i] = parseFloat(Biomass_gram).toFixed(1); 
-            y.Product_gL[i] = parseFloat(Product_gL).toFixed(1);
+            p.Time_hr[i] = time;        
+            p.Volume_L[i] = Volume_L;
+            p.TempC[i] = TempC;      
+            p.GrowthRate[i] = GrowthRate2;   
+            y.Biomass_gL[i] = Biomass_gL; 
+            y.Biomass_gram[i] = Biomass_gram; 
+            y.Product_gL[i] = Product_gL;
             y.Product_gram[i] = Product_gram; 
             y.incProdYield[i] = incProdYield; 
             y.ProdYield[i] = avg(y.incProdYield);
@@ -662,16 +665,16 @@ function Execute(){
         //var largest = Math.max.apply(Math, y.ProdYield);                  
 
         $( document ).ready(function() {
-        $("#1").text("Product Yield (g/g): "+ProdYield);
-        $("#2").text("Final Volume (L): "+Volume_L);
-        $("#3").text("Product Titer (g/L): "+Product_gL);
-        $("#4").text("Total Product (g): "+Product_gram);
-        $("#5").text("Biomass Titer max (g/L): "+ newBiomass_gL);
-        $("#6").text("Total Biomass (g): "+ newBiomass_gram);
-        $("#7").text("Overall Yield (g/g): "+newOverallYield);
+        $("#1").text("Product Yield (g/g):"+ProdYield);
+        $("#2").text("Final Volume (L):             "+Volume_L);
+        $("#3").text("Product Titer (g/L):          "+Product_gL);
+        $("#4").text("Total Product (g):            "+Product_gram);
+        $("#5").text("Biomass Titer max (g/L):      "+ newBiomass_gL);
+        $("#6").text("Total Biomass (g):            "+ newBiomass_gram);
+        $("#7").text("Overall Yield (g/g):          "+newOverallYield);
         $("#8").text("Inc. Product Yield max (g/g): "+incProdYield);
-        $("#9").text("vOUR max (mM/hr): "+ MaxvOUR);
-        $("#10").text("Productivity max (g/g/hr): "+ xProdmax);
+        $("#9").text("vOUR max (mM/hr):             "+ MaxvOUR);
+        $("#10").text("Productivity max (g/g/hr):   "+ xProdmax);
         }); 
 
         var ctx = document.getElementById("canvas").getContext("2d");
@@ -721,13 +724,15 @@ function Execute(){
       
         var min = [input_GrowthTemp.min,input_ProcessTime_hr.min,input_targetOUR.min,input_Innoculum_gram.min,input_InitialVolume_L.min,input_TempDropTime_hr.min,input_TransitionBiomass_gL.min,input_xOURmin.min,input_xOURmax.min,input_maxProdYield.min,input_maxBioYield.min,input_maxGrowthRate.min,input_BioDensity.min,input_ProdDensity.min,input_Carbon_Conc.min];
         
+
         var max = [input_GrowthTemp.max,input_ProcessTime_hr.max,input_targetOUR.max,input_Innoculum_gram.max,input_InitialVolume_L.max,input_TempDropTime_hr.max,input_TransitionBiomass_gL.max,input_xOURmin.max,input_xOURmax.max,input_maxProdYield.max,input_maxBioYield.max,input_maxGrowthRate.max,input_BioDensity.max,input_ProdDensity.max,input_Carbon_Conc.max];
-       	var PreExp = 1.09e13;
+        var PreExp = 1.09e13;
         var ActEne = 77410;
         var GasCon = 8.3145;
 
         var fix = PreExp*Math.exp(-ActEne/(GasCon*(Math.min(input_GrowthTemp.value,input_ProductionTemp.value) + 273.15)));
         max[7] = parseFloat(input_xOURmax.value*fix*.85).toFixed(1);
+
         for (i=0; i < setVariables.length;i++) {
             var value = Number(setVariables[i]);
 
