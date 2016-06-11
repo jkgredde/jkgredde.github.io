@@ -168,9 +168,10 @@ function Execute(){
                 return total/array.length
             };
 
-            var fTemp_C = function(startTemp,EndTemp,dropTime,transBio,TransTime){ 
+            var fTemp_C = function(startTemp,EndTemp,dropTime,transBio,transTime){ 
                 var Biomass_gL;
                 var TempC;
+                var transTime;
                 if (i===0){Biomass_gL = y.Biomass_gL[0];}
                 else {Biomass_gL = y.Biomass_gL[i-1];}
                 
@@ -178,7 +179,7 @@ function Execute(){
                 if (Biomass_gL > transBio) {
                     TempC = p.TempC[i-1] - time_inc*(startTemp - EndTemp)/dropTime;
                 }
-                else if (TransTime > 0 && Biomass_gL < transBio){
+                else if (transTime > 0 && Biomass_gL < transBio){
                     TempC = EndTemp;
                 }
                 else if (Biomass_gL <= transBio) {
@@ -298,7 +299,7 @@ function Execute(){
             var OUR = vOUR*Volume_L;
 		
 	    if(Biomass_gL>TransitionBiomass_gL){
-                p.TransTime = time;
+                p.transTime = time;
             };	
 		
             p.xOUR[i] = xOUR; //Nan
