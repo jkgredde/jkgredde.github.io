@@ -141,7 +141,7 @@ function Execute(){
         var ProcessData = {
             Time_hr:[0],
             Volume_L:[InitialVolume_L],
-            GrowthRate:[0.69], 
+            GrowthRate:[maxGrowthRate], 
             TempC:[GrowthTemp],
             OUR:[0],
             vOUR:[0],
@@ -149,7 +149,6 @@ function Execute(){
             GrowthFactor:[1],
             Arrhenius:[1.5e15, 91229, 8.3145],
             xCUR:[],         
-            GrowthFactor:[1],
 
             
         };
@@ -238,7 +237,7 @@ function Execute(){
 
             //Call Functions
 
-            var TempC = fTemp_C(Number(GrowthTemp),Number(ProductionTemp),Number(TempDropTime_hr),Number(TransitionBiomass_gL));
+            var TempC = fTemp_C(Number(GrowthTemp)-.1,Number(ProductionTemp),Number(TempDropTime_hr),Number(TransitionBiomass_gL));
             
             
             //TempInhibition
