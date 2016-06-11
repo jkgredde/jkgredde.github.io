@@ -6,12 +6,19 @@ input{
     text-align: center;
 }
 
-h2, h3 {
+h2, h3{
     text-align: center;
     border-style: double;
     border-width: 0px 0px 2px 0px;
     border-color: rgb(118,188,116)
 }
+#creation{
+    text-align: right;
+}
+h5 {
+    text-align: center;
+}
+
 body {
  
    
