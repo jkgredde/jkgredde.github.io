@@ -16,37 +16,84 @@ body {
  
    
 }
-.dropdown-menu{
- color: white;
- background-color: rgb(39,163,209); 
- 
-}
-.dropdown-menu li a{
- color: white;
- background-color: rgb(39,163,209); 
- 
-}
-.navbar-brand{
 
- background-color: rgb(39,163,209); 
- color: white;
-}
-.nav.navbar-nav li a{
 
- background-color: rgb(39,163,209); 
+
+
+ul.dropdown-menu{
  color: white;
+ background-color: rgb(118,188,116);  
+}
+
+.nav.navbar-nav{
+    width: 100%;
+    background-color: rgb(0,80,114); 
+    
+}
+ul.nav.navbar-nav li a{
+ 
+    background-color: rgb(0,80,114); 
+    color: white;
+}
+
+#RefList li{
+ background-color: rgb(175,161,161); 
+
+}
+.image-rounded{
+    padding:4px;
 }
 
 #ChartSection {
 
-    background-image: url("http://jkgredde.github.io/steelPic.jpg"); 
+    background-image: url("steelPic.jpg"); 
     border-style: solid;
     border-width: 2px;
     padding: 5px;
 }
+
+
+
 #ButtonGroup {
     text-align: center;
 }
+/*
+.bubble{
+    background-color: #F2F2F2;
+    border-radius: 5px;
+    box-shadow: 0px 0px 6px #B2B2B2;
+    height: 75px;
+    margin: 20px;
+    width:  250px;
+}
+
+.bubble::after {
+    background-color: #F2F2F2;
+    box-shadow: -2px 2px 2px 0 rgba( 178, 178, 178, .4 );
+    content: "\00a0";
+    display: block;
+    height: 20px;
+    left: -9px;
+    position: relative;
+    top: 15px;
+    transform:rotate( 45deg );    
+    width:  20px;
+}
+div.animation {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 120px;
+    height: 120px;
+    margin:-60px 0 0 -60px;
+    -webkit-animation:spin 4s linear 10;
+    -moz-animation:spin 4s linear 10;
+    animation:spin 4s linear 10;
+}
+@-moz-keyframes spin { 100% { -moz-transform: rotate(360deg); } }
+@-webkit-keyframes spin { 100% { -webkit-transform: rotate(360deg); } }
+@keyframes spin { 100% { -webkit-transform: rotate(360deg); transform:rotate(360deg); } }
+
 /*
 #ChartSection {
     line-height:30px;
