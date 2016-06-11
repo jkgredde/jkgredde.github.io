@@ -148,7 +148,8 @@ function Execute(){
             xOUR:[xOURmax],
             GrowthFactor:[1],
             Arrhenius:[1.5e15, 91229, 8.3145],
-            xCUR:[],         
+            xCUR:[],
+            transTime:0,
 
             
         };
@@ -167,7 +168,7 @@ function Execute(){
                 return total/array.length
             };
 
-            var fTemp_C = function(startTemp,EndTemp,dropTime,transBio){ 
+            var fTemp_C = function(startTemp,EndTemp,dropTime,transBio,TransTime){ 
                 var Biomass_gL;
                 var TempC;
                 if (i===0){Biomass_gL = y.Biomass_gL[0];}
@@ -176,7 +177,10 @@ function Execute(){
                 
                 if (Biomass_gL > transBio) {
                     TempC = p.TempC[i-1] - time_inc*(startTemp - EndTemp)/dropTime;
-                } 
+                }
+                else if (TransTime > 0 && Biomass_gL < transBio){
+                    TempC = EndTemp;
+                }
                 else if (Biomass_gL <= transBio) {
                     TempC = startTemp;
                 }
@@ -237,7 +241,7 @@ function Execute(){
 
             //Call Functions
 
-            var TempC = fTemp_C(Number(GrowthTemp)-.1,Number(ProductionTemp),Number(TempDropTime_hr),Number(TransitionBiomass_gL));
+            var TempC = fTemp_C(Number(GrowthTemp)-.2,Number(ProductionTemp),Number(TempDropTime_hr),Number(TransitionBiomass_gL),p.transBio);
             
             
             //TempInhibition
@@ -292,7 +296,11 @@ function Execute(){
 
             var vOUR = Biomass_gL*xOUR; 
             var OUR = vOUR*Volume_L;
-
+		
+	    if(Biomass_gL>TransitionBiomass_gL){
+                p.TransTime = time;
+            };	
+		
             p.xOUR[i] = xOUR; //Nan
             p.xCUR[i] = UptakeRate;
             p.vOUR[i] = vOUR;
