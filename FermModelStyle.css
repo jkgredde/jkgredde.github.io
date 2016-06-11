@@ -16,12 +16,15 @@ body {
  
    
 }
-#mymenu li{
-    padding: 0;
-    margin: 0;
-    background-color: white;
-    border: 0px;
-    box-shadow: 0px
+.dropdown-menu{
+ color: white;
+ background-color: rgb(160,80,114); 
+ 
+}
+.dropdown-menu li a{
+ color: white;
+ background-color: rgb(160,80,114); 
+ 
 }
 .navbar-brand{
 
