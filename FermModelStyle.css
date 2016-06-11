@@ -1,22 +1,50 @@
+input[type=number] {
+    width: 100px;
+    padding: 1px;
+}
+input{
+    text-align: center;
+}
+
+h2, h3 {
+    text-align: center;
+    border-style: double;
+    border-width: 0px 0px 2px 0px;
+    border-color: rgb(118,188,116)
+}
 body {
+ 
+   
+}
+#mymenu li{
+    padding: 0;
+    margin: 0;
     background-color: white;
+    border: 0px;
+    box-shadow: 0px
+}
+.navbar-brand{
+
+ background-color: rgb(39,163,209); 
+ color: white;
+}
+.nav.navbar-nav li a{
+
+ background-color: rgb(39,163,209); 
+ color: white;
 }
 
-h1 {
-    color: blue;
-}
+#ChartSection {
 
-p {
-    color:green;
+    background-image: url("steelPic.jpg"); 
+    border-style: solid;
+    border-width: 2px;
+    padding: 5px;
 }
-h2 {
-    background-color:black;
-    color:white;
-    text-align:center;
-    padding:5px;
-    
-    width: 800px;
+#ButtonGroup {
+    text-align: center;
 }
+/*
 #ChartSection {
     line-height:30px;
     background-color:#eeeeee;

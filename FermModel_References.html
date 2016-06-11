@@ -1,0 +1,83 @@
+<!doctype html>
+<html>
+<head>
+    <title>References</title>
+    <meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="stylesheet" href="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css">
+<script src="http://cdnjs.cloudflare.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
+<script src="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
+<link rel="stylesheet" type="text/css" href="FermModelStyle.css">
+    <style>
+        canvas{
+        -moz-user-select: none;
+        -webkit-user-select: none;
+        -ms-user-select: none;
+    }
+    </style>
+</head>
+
+<body>
+
+<div class = "conatiner">    
+
+    <nav class="navbar navbar-default">
+      <div class="container-fluid">
+        <div class="navbar-header">
+          <a class="navbar-brand" >BioProcess Model</a>
+        </div>
+        <ul class="nav navbar-nav">
+          <li><a href="file:///C:\Users\Jkgredde\Desktop\JavaScriptModel\FermModel_About.html">About</a></li>
+          <li><a href="file:///C:\Users\Jkgredde\Desktop\JavaScriptModel\index.html">Model</a></li>
+          <li class="active"><a href="file:///C:\Users\Jkgredde\Desktop\JavaScriptModel\FermModel_References.html">References</a></li>
+          <li class="dropdown">
+              <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Contact Us <span class="caret"></span></a>
+              <ul class="dropdown-menu">
+                <li><a href="mailto:josephk@gredder.com?subject=Thing">Email</a></li>
+                <li><a href="https://www.linkedin.com/in/jkgredder" target="_blank">LinkedIn</a></li>
+                <li role="separator" class="divider"></li>
+                <li><a href="http://www.gredder.com" target="_blank">www.gredder.com</a></li>
+              </ul>
+            </li>
+        </ul>
+      </div>
+    </nav>   
+
+
+    <h2>References</h2>
+
+    <div class ="container">   
+        <ul class = "list-group">
+            <li class ="list-group-item">Feist.A,Henry.C,Reed.J,et al..(2007). A genome-scale metabolic reconstructions for Escherichia coli K-12 MG1655 that accounts for... Molecular Systems Biology. 3:121.</li>
+            <li class ="list-group-item">Hasona.A, Kim.Y, Healy.F, Ingram.L, K.Shanmugan.(2004).Pyruvate Formate Lyase and Acetate Kinase Are Essential for Anaeurobic Growth of Escherichia coli on Xylose. Bacteriology. 186:22.</li>
+            
+        </ul>  
+    </div>
+
+    <h2>Equations and Assumptions</h2>
+    <div class ="container">   
+        <ul class = "list-group">
+            <h4>Growth Rate</h4>
+            <li class ="list-group-item">Decreased as a funciton of temperature according to the Arrhenius equation.<img src="arrhenius2.gif" style="width:60px;height:25px"><br>Is further decreased due to oxygen limitation as specific OUR reaches critical lows.     
+            </li>
+            <h4>Biomass:</h4>
+            <li class ="list-group-item">Increases exponentially with growth rate</li>
+            <h4>Product</h4>
+            <li class ="list-group-item">Increases according to specific productivity and biomass concentration.</li>
+            <h4>Specific Productivity</h4>
+            <li class ="list-group-item">A function of incremental biomass and product yields along with carbun uptake</li>
+            <h4>Yields</h4>
+            <li class ="list-group-item">Biomass yield decreases with growth rate while product yield increases.</li>
+            <h4>vOUR (mM/hr)</h4>
+            <li class ="list-group-item">Calculated from specific OUR which is a function of growth rate and oxygen limitations</li>
+            <h4>Volume</h4>
+            <li class ="list-group-item">Calculated from carbon feed, carbon being combusted, densities (co-feeds not included...yet).</li>
+        </ul>
+    </div>
+
+    <h3><a href="file:///C:\Users\Jkgredde\Desktop\JavaScriptModel\index.html">Go Back To Model!</a><h3>
+
+</div>
+</body>
+</html>

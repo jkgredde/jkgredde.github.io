@@ -2,9 +2,7 @@ window.onload = Execute;
 	
 function Execute(){
     //Set initial variablea
-    if (document.getElementById('Organism').value==="") {
-       document.getElementById('Organism').value = 'E.coli';
-    }
+    
     var s = sessionStorage;
     s.clear();
 	s.setItem('ProcessTime_hr', document.getElementById('ProcessTime_hr').value);
@@ -671,7 +669,7 @@ function Execute(){
         var ctx = document.getElementById("canvas").getContext("2d");
         window.myLine = new Chart(ctx, config);   
 
-        setTimeout(EnableButtons,600);
+        setTimeout(EnableButtons,750);
 	};
     
     $( document ).ready(RunTest);
@@ -684,7 +682,7 @@ function Execute(){
     $('#CellSpecificData').prop("disabled",false);
     }
 
-    setTimeout(EnableButtons,600);
+    setTimeout(EnableButtons,750);
 	
     //RunTest();
     var input_ProcessTime_hr = document.getElementById("ProcessTime_hr");
