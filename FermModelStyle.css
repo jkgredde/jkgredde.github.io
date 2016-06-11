@@ -35,6 +35,13 @@ ul.nav.navbar-nav li a{
     background-color: rgb(0,80,114); 
     color: white;
 }
+.dropdown-menu li{
+    margin: 0px;
+    padding: 2px; 
+    text-align: center;
+    background-color: rgb(0,80,114); 
+    color: white;
+}
 
 #RefList li{
  background-color: rgb(175,161,161); 
