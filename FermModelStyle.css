@@ -19,7 +19,6 @@ body {
 
 
 
-
 ul.dropdown-menu{
  color: white;
  background-color: rgb(118,188,116);  
@@ -36,6 +35,9 @@ ul.dropdown-menu{
 .nav.navbar-nav li a:hover{
     background:rgb(39,163,209);
 }    
+.nav.navbar-nav ul li a:active{
+    background-color:rgb(39,163,209);
+}  
 
 ul.nav.navbar-nav li a{
  
@@ -73,11 +75,15 @@ ul.nav.navbar-nav li a{
     padding: 5px;
 }
 
-
-
-#ButtonGroup {
+.btn-group.btn-group-md button{
+    background:rgb(0,80,114);
     text-align: center;
 }
+.btn-group.btn-group-md button:hover{
+    */background:rgb(175,161,161);
+    background:rgb(221,102,102);
+}
+
 /*
 .bubble{
     background-color: #F2F2F2;
