@@ -713,7 +713,12 @@ function Execute(){
         var min = [input_GrowthTemp.min,input_ProcessTime_hr.min,input_targetOUR.min,input_Innoculum_gram.min,input_InitialVolume_L.min,input_TempDropTime_hr.min,input_TransitionBiomass_gL.min,input_xOURmin.min,input_xOURmax.min,input_maxProdYield.min,input_maxBioYield.min,input_maxGrowthRate.min,input_BioDensity.min,input_ProdDensity.min,input_Carbon_Conc.min];
         
         var max = [input_GrowthTemp.max,input_ProcessTime_hr.max,input_targetOUR.max,input_Innoculum_gram.max,input_InitialVolume_L.max,input_TempDropTime_hr.max,input_TransitionBiomass_gL.max,input_xOURmin.max,input_xOURmax.max,input_maxProdYield.max,input_maxBioYield.max,input_maxGrowthRate.max,input_BioDensity.max,input_ProdDensity.max,input_Carbon_Conc.max];
-       
+       	var PreExp = 1.09e13;
+        var ActEne = 77410;
+        var GasCon = 8.3145;
+
+        var fix = PreExp*Math.exp(-ActEne/(GasCon*(Math.min(input_GrowthTemp.value,input_ProductionTemp.value) + 273.15)));
+        max[7] = parseFloat(input_xOURmax.value*fix*.85).toFixed(1);
         for (i=0; i < setVariables.length;i++) {
             var value = Number(setVariables[i]);
 
