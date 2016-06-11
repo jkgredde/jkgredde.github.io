@@ -28,7 +28,7 @@ body {
  background-color: rgb(39,163,209); 
  color: white;
 }
-.nav.navbar-nav li{
+.nav.navbar-nav li a{
 
  background-color: rgb(39,163,209); 
  color: white;
