@@ -387,7 +387,12 @@ function Execute(){
         var pointBackground_GrowthRate = "rgba(255,210,31,1)";
         var backgroundColor_GrowthRate = "rgba(255,210,31,1)";
 
-        
+        var decimal = function(array){}
+            for (i=0; i<array.length;i++){
+                array[i] = array[i].toFixed(3);
+            }
+        };
+        array(y.Biomass_gL);
 
         var xAxis = [];
         for (i=0;i < p.Time_hr.length; i++){
