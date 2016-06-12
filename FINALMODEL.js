@@ -305,23 +305,23 @@ function Execute(){
                 p.TransTime = time;
             };
 
-            p.xOUR[i] = xOUR; //Nan
-            p.xCUR[i] = UptakeRate;
-            p.vOUR[i] = vOUR;
+            p.xOUR[i] = parseFloat(xOUR).toFixed(1); //Nan
+            p.xCUR[i] = parseFloat(UptakeRate)toFixed(3);
+            p.vOUR[i] = parseFloat(vOUR).toFixed(1);
             p.OUR[i] = OUR;
             p.Time_hr[i] = time;        
-            p.Volume_L[i] = Volume_L;
-            p.TempC[i] = TempC;      
-            p.GrowthRate[i] = GrowthRate2;   
-            y.Biomass_gL[i] = Biomass_gL; 
-            y.Biomass_gram[i] = Biomass_gram; 
-            y.Product_gL[i] = Product_gL;
-            y.Product_gram[i] = Product_gram; 
-            y.incProdYield[i] = incProdYield; 
+            p.Volume_L[i] = parseFloat(Volume_L)toFixed(2);
+            p.TempC[i] = parseFloat(TempC).toFixed(1);      
+            p.GrowthRate[i] = parseFloat(GrowthRate2).toFixed(3);   
+            y.Biomass_gL[i] = parseFloat(Biomass_gL).toFixed(2); 
+            y.Biomass_gram[i] = parseFloat(Biomass_gram).toFixed(2); 
+            y.Product_gL[i] = parseFloat(Product_gL).toFixed(2);
+            y.Product_gram[i] = parseFloat(Product_gram).toFixed(2); 
+            y.incProdYield[i] = parseFloat(incProdYield).toFixed(2); 
             y.ProdYield[i] = avg(y.incProdYield);
-            y.incBioYield[i] = incBioYield; 
+            y.incBioYield[i] = parseFloat(incBioYield).toFixed(2); 
             y.BioYield[i] = avg(y.incBioYield); //good
-            y.xProd[i] = xProd; //good
+            y.xProd[i] = parseFloat(xProd).toFixed(3); //good
             y.OverallYield[i] = y.ProdYield[i] + y.BioYield[i];
 
             p.GrowthFactor[i] = GrowthFactor;
