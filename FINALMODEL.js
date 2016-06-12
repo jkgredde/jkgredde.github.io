@@ -389,7 +389,7 @@ function Execute(){
 
         var decimal = function(array){}
             for (i=0; i<array.length;i++){
-                array[i] = array[i].toFixed(3);
+                array[i] = parseFloat(array[i]).toFixed(3);
             }
         };
         decimal(y.Biomass_gL);
