@@ -306,11 +306,11 @@ function Execute(){
             };
 
             p.xOUR[i] = parseFloat(xOUR).toFixed(1); //Nan
-            p.xCUR[i] = parseFloat(UptakeRate)toFixed(3);
+            p.xCUR[i] = parseFloat(UptakeRate).toFixed(3);
             p.vOUR[i] = parseFloat(vOUR).toFixed(1);
             p.OUR[i] = OUR;
             p.Time_hr[i] = time;        
-            p.Volume_L[i] = parseFloat(Volume_L)toFixed(2);
+            p.Volume_L[i] = parseFloat(Volume_L).toFixed(2);
             p.TempC[i] = parseFloat(TempC).toFixed(1);      
             p.GrowthRate[i] = parseFloat(GrowthRate2).toFixed(3);   
             y.Biomass_gL[i] = parseFloat(Biomass_gL).toFixed(2); 
