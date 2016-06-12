@@ -392,7 +392,7 @@ function Execute(){
                 array[i] = array[i].toFixed(3);
             }
         };
-        array(y.Biomass_gL);
+        decimal(y.Biomass_gL);
 
         var xAxis = [];
         for (i=0;i < p.Time_hr.length; i++){
